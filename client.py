@@ -9,8 +9,12 @@ def receive():
                 nickname = input("Choose a nickname: ")
                 client.send(nickname.encode("ascii"))
                 print(client.recv(1024).decode("ascii"))
-            else:
+            elif message != "":
                 print(message)
+            else:
+                print("Server Error")
+                client.close()
+                break
         except:
             print("Network Error")
             client.close()

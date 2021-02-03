@@ -1,7 +1,5 @@
 import socket
 import threading
-import os
-from dotenv import load_dotenv
 
 class User:
     def __init__(self, client, nickname):
@@ -19,11 +17,21 @@ def handle(user):
     while True:
         try:
             message = user.client.recv(1024).decode("ascii")
+            print("Message has been received")
+            if(message == ""):
+                print("Empty")
+                index = users.index(user)
+                users.remove(user)
+                user.client.close()
+                break
             broadcast(user, message)
+            print("Message has been broadcasted")
         except:
+            print("Desconectando usuario")
             index = users.index(user)
             users.remove(user)
             user.client.close()
+            print("Un usuario se desconecto")
             break
 
 
@@ -41,13 +49,10 @@ def receive():
 
 
 if __name__ == '__main__':
-    # Init dotenv
-    if os.getenv('PY_ENV') != "PRO":
-        load_dotenv()
 
     # Connection data
-    SERVER_IP = os.getenv('IP_ADDRESS')
-    SERVER_PORT = int(os.getenv('PORT'))
+    SERVER_IP = "192.168.1.4"
+    SERVER_PORT = 5400
 
     # Starting Server
     server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
